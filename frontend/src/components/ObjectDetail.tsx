@@ -2,6 +2,20 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  ArrowLeft,
+  Wrench,
+  Settings,
+  Link,
+  Activity,
+  AlertTriangle,
+  Layers,
+  MapPin,
+  Calendar,
+  CheckCircle,
+  XCircle,
+  FileText
+} from 'lucide-react';
 import './ObjectDetail.css';
 
 const ObjectDetail = () => {
@@ -50,73 +64,123 @@ const ObjectDetail = () => {
     }
   };
 
+  const getObjectIcon = (type: string) => {
+    switch (type) {
+      case 'crane': return <Wrench size={32} />;
+      case 'compressor': return <Settings size={32} />;
+      case 'pipeline_section': return <Link size={32} />;
+      default: return <Settings size={32} />;
+    }
+  };
+
   return (
     <div className="object-detail">
       <button className="back-button" onClick={() => navigate('/objects')}>
-        ← Назад к списку
+        <ArrowLeft size={16} /> Назад к списку
       </button>
 
-      <div className="detail-header">
-        <div className="header-icon">
-          {object.object_type === 'crane' && '🔧'}
-          {object.object_type === 'compressor' && '⚙️'}
-          {object.object_type === 'pipeline_section' && '🔗'}
+      <div className="detail-header card">
+        <div className={`header-icon-wrapper ${object.object_type}`}>
+          {getObjectIcon(object.object_type)}
         </div>
         <div className="header-info">
           <h1>{object.object_name}</h1>
           <div className="header-meta">
-            <span>ID: {object.object_id}</span>
-            <span>•</span>
-            <span>Трубопровод: {object.pipeline_id}</span>
-            <span>•</span>
-            <span>Год: {object.year}</span>
+            <span className="meta-pill">ID: {object.object_id}</span>
+            <span className="meta-pill">Трубопровод: {object.pipeline_id}</span>
+            <span className="meta-pill">Год: {object.year}</span>
           </div>
         </div>
       </div>
 
       <div className="detail-stats">
-        <div className="stat-box">
-          <div className="stat-value">{total_inspections}</div>
-          <div className="stat-label">Обследований</div>
-        </div>
-        <div className="stat-box">
-          <div className="stat-value">{defects_count}</div>
-          <div className="stat-label">Дефектов найдено</div>
-        </div>
-        <div className="stat-box">
-          <div className="stat-value">{object.material}</div>
-          <div className="stat-label">Материал</div>
-        </div>
-        <div className="stat-box">
-          <div className="stat-value">
-            {object.lat.toFixed(4)}, {object.lon.toFixed(4)}
+        <div className="stat-box card">
+          <div className="stat-icon-bg blue">
+            <Activity size={24} />
           </div>
-          <div className="stat-label">Координаты</div>
+          <div className="stat-content">
+            <div className="stat-value">{total_inspections}</div>
+            <div className="stat-label">Обследований</div>
+          </div>
+        </div>
+        <div className="stat-box card">
+          <div className="stat-icon-bg orange">
+            <AlertTriangle size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{defects_count}</div>
+            <div className="stat-label">Дефектов найдено</div>
+          </div>
+        </div>
+        <div className="stat-box card">
+          <div className="stat-icon-bg purple">
+            <Layers size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{object.material}</div>
+            <div className="stat-label">Материал</div>
+          </div>
+        </div>
+        <div className="stat-box card">
+          <div className="stat-icon-bg green">
+            <MapPin size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value coords">
+              {object.lat.toFixed(4)}, {object.lon.toFixed(4)}
+            </div>
+            <div className="stat-label">Координаты</div>
+          </div>
         </div>
       </div>
 
       {history.length > 0 && (
-        <div className="history-section">
-          <h2>История обследований</h2>
-          <div style={{padding: '1.25rem'}}>
+        <div className="history-section card">
+          <div className="section-header">
+            <Calendar size={20} />
+            <h2>История обследований</h2>
+          </div>
+          <div className="chart-container">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={history}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2a3f54" />
-                <XAxis dataKey="year" stroke="#aab7c4" tick={{fill: '#aab7c4'}} />
-                <YAxis stroke="#aab7c4" tick={{fill: '#aab7c4'}} />
-                <Tooltip contentStyle={{backgroundColor: '#232f3e', border: '1px solid #2a3f54', color: '#fff'}} />
-                <Legend wrapperStyle={{color: '#aab7c4'}} />
-                <Line type="monotone" dataKey="total_inspections" stroke="#0972d3" name="Обследований" strokeWidth={2} />
-                <Line type="monotone" dataKey="defects_found" stroke="#ff9900" name="Дефектов" strokeWidth={2} />
-                <Line type="monotone" dataKey="high_risk" stroke="#d13212" name="Высокий риск" strokeWidth={2} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <XAxis
+                  dataKey="year"
+                  stroke="var(--text-secondary)"
+                  tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="var(--text-secondary)"
+                  tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'var(--surface)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    boxShadow: 'var(--shadow-md)',
+                    color: 'var(--text-primary)'
+                  }}
+                />
+                <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                <Line type="monotone" dataKey="total_inspections" stroke="var(--primary)" name="Обследований" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="defects_found" stroke="var(--status-warning)" name="Дефектов" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="high_risk" stroke="var(--status-error)" name="Высокий риск" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
       )}
 
-      <div className="diagnostics-section">
-        <h2>История диагностик</h2>
+      <div className="diagnostics-section card">
+        <div className="section-header">
+          <FileText size={20} />
+          <h2>История диагностик</h2>
+        </div>
         <div className="diagnostics-table-container">
           <table className="diagnostics-table">
             <thead>
@@ -137,9 +201,13 @@ const ObjectDetail = () => {
                   <td><span className="method-badge">{diag.method}</span></td>
                   <td>
                     {diag.defect_found ? (
-                      <span className="defect-yes">✓ Да</span>
+                      <span className="defect-status yes">
+                        <CheckCircle size={14} /> Да
+                      </span>
                     ) : (
-                      <span className="defect-no">✗ Нет</span>
+                      <span className="defect-status no">
+                        <XCircle size={14} /> Нет
+                      </span>
                     )}
                   </td>
                   <td>{diag.defect_description || '—'}</td>

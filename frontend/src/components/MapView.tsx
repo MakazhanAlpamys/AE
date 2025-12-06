@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import axios from 'axios';
 import L from 'leaflet';
+import { Map as MapIcon, Filter, Layers, AlertTriangle } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import './MapView.css';
 
@@ -48,9 +49,9 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const createCustomIcon = (color: string) => {
   return L.divIcon({
     className: 'custom-marker',
-    html: `<div style="background-color: ${color}; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>`,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10]
+    html: `<div style="background-color: ${color}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>`,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8]
   });
 };
 
@@ -101,10 +102,10 @@ const MapView = () => {
 
   const getMarkerColor = (mlLabel: string) => {
     switch (mlLabel) {
-      case 'high': return '#e74c3c';
-      case 'medium': return '#f39c12';
-      case 'normal': return '#2ecc71';
-      default: return '#95a5a6';
+      case 'high': return '#ef4444';
+      case 'medium': return '#f97316';
+      case 'normal': return '#22c55e';
+      default: return '#94a3b8';
     }
   };
 
@@ -120,139 +121,164 @@ const MapView = () => {
   return (
     <div className="map-view">
       <div className="map-header">
-        <h2>🗺️ Карта трубопроводов</h2>
-        <div className="map-filters">
-          <select 
-            value={filters.pipeline_id} 
-            onChange={(e) => setFilters({...filters, pipeline_id: e.target.value})}
-          >
-            <option value="">Все трубопроводы</option>
-            <option value="MT-01">MT-01</option>
-            <option value="MT-02">MT-02</option>
-            <option value="MT-03">MT-03</option>
-          </select>
+        <h2 className="page-title">
+          <MapIcon className="icon-title" /> Карта трубопроводов
+        </h2>
 
-          <select 
-            value={filters.ml_label} 
-            onChange={(e) => setFilters({...filters, ml_label: e.target.value})}
-          >
-            <option value="">Все риски</option>
-            <option value="high">Высокий</option>
-            <option value="medium">Средний</option>
-            <option value="normal">Низкий</option>
-          </select>
+        <div className="map-controls card">
+          <div className="controls-header">
+            <Filter size={16} />
+            <span>Фильтры отображения</span>
+          </div>
 
-          <select 
-            value={filters.method} 
-            onChange={(e) => setFilters({...filters, method: e.target.value})}
-          >
-            <option value="">Все методы</option>
-            <option value="VIK">VIK</option>
-            <option value="UZK">UZK</option>
-            <option value="MFL">MFL</option>
-            <option value="TFI">TFI</option>
-            <option value="GEO">GEO</option>
-          </select>
+          <div className="map-filters">
+            <select
+              value={filters.pipeline_id}
+              onChange={(e) => setFilters({ ...filters, pipeline_id: e.target.value })}
+              className="filter-select"
+            >
+              <option value="">Все трубопроводы</option>
+              <option value="MT-01">MT-01</option>
+              <option value="MT-02">MT-02</option>
+              <option value="MT-03">MT-03</option>
+            </select>
 
-          <label className="checkbox-label">
-            <input 
-              type="checkbox" 
-              checked={filters.defect_only}
-              onChange={(e) => setFilters({...filters, defect_only: e.target.checked})}
+            <select
+              value={filters.ml_label}
+              onChange={(e) => setFilters({ ...filters, ml_label: e.target.value })}
+              className="filter-select"
+            >
+              <option value="">Все риски</option>
+              <option value="high">Высокий</option>
+              <option value="medium">Средний</option>
+              <option value="normal">Низкий</option>
+            </select>
+
+            <select
+              value={filters.method}
+              onChange={(e) => setFilters({ ...filters, method: e.target.value })}
+              className="filter-select"
+            >
+              <option value="">Все методы</option>
+              <option value="VIK">VIK</option>
+              <option value="UZK">UZK</option>
+              <option value="MFL">MFL</option>
+              <option value="TFI">TFI</option>
+              <option value="GEO">GEO</option>
+            </select>
+
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={filters.defect_only}
+                onChange={(e) => setFilters({ ...filters, defect_only: e.target.checked })}
+              />
+              <span className="checkbox-text">Только дефекты</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div className="map-content-wrapper card">
+        <div className="map-legend">
+          <div className="legend-title">
+            <Layers size={14} /> Легенда
+          </div>
+          <div className="legend-items">
+            <div className="legend-item">
+              <div className="legend-marker" style={{ backgroundColor: '#ef4444' }}></div>
+              <span>Высокий риск</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-marker" style={{ backgroundColor: '#f97316' }}></div>
+              <span>Средний риск</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-marker" style={{ backgroundColor: '#22c55e' }}></div>
+              <span>Низкий риск</span>
+            </div>
+          </div>
+          <div className="legend-count">
+            Отображено точек: <strong>{points.length}</strong>
+          </div>
+        </div>
+
+        <div className="map-container">
+          <MapContainer
+            center={center}
+            zoom={6}
+            style={{ height: '100%', width: '100%' }}
+            zoomControl={false}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             />
-            Только дефекты
-          </label>
-        </div>
-      </div>
 
-      <div className="map-legend">
-        <div className="legend-item">
-          <div className="legend-marker" style={{backgroundColor: '#e74c3c'}}></div>
-          <span>Высокий риск</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-marker" style={{backgroundColor: '#f39c12'}}></div>
-          <span>Средний риск</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-marker" style={{backgroundColor: '#2ecc71'}}></div>
-          <span>Низкий риск</span>
-        </div>
-        <div className="legend-count">
-          Отображено точек: <strong>{points.length}</strong>
-        </div>
-      </div>
+            {/* Линии трубопроводов */}
+            {pipelines.map((pipeline) => (
+              <Polyline
+                key={pipeline.pipeline_id}
+                positions={pipeline.coordinates}
+                pathOptions={{ color: '#3b82f6', weight: 4, opacity: 0.8 }}
+              >
+                <Popup>
+                  <div className="popup-content">
+                    <strong>{pipeline.name}</strong>
+                    <br />
+                    ID: {pipeline.pipeline_id}
+                  </div>
+                </Popup>
+              </Polyline>
+            ))}
 
-      <div className="map-container">
-        <MapContainer 
-          center={center} 
-          zoom={6} 
-          style={{ height: '100%', width: '100%' }}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-
-          {/* Линии трубопроводов */}
-          {pipelines.map((pipeline) => (
-            <Polyline
-              key={pipeline.pipeline_id}
-              positions={pipeline.coordinates}
-              pathOptions={{ color: '#3498db', weight: 3, opacity: 0.7 }}
-            >
-              <Popup>
-                <strong>{pipeline.name}</strong>
-                <br />
-                ID: {pipeline.pipeline_id}
-              </Popup>
-            </Polyline>
-          ))}
-
-          {/* Маркеры объектов */}
-          {points.map((point) => (
-            <Marker
-              key={point.object_id}
-              position={[point.lat, point.lon]}
-              icon={createCustomIcon(getMarkerColor(point.ml_label))}
-            >
-              <Popup>
-                <div className="popup-content">
-                  <h3>{point.object_name}</h3>
-                  <div className="popup-field">
-                    <strong>Тип:</strong> {point.object_type}
-                  </div>
-                  <div className="popup-field">
-                    <strong>Трубопровод:</strong> {point.pipeline_id}
-                  </div>
-                  <div className="popup-field">
-                    <strong>Метод:</strong> {point.method}
-                  </div>
-                  <div className="popup-field">
-                    <strong>Дата:</strong> {point.date}
-                  </div>
-                  <div className="popup-field">
-                    <strong>Риск:</strong> 
-                    <span className={`risk-badge ${point.ml_label}`}>
-                      {getRiskLabel(point.ml_label)}
-                    </span>
-                  </div>
-                  {point.defect_description && (
-                    <div className="popup-field">
-                      <strong>Дефект:</strong> {point.defect_description}
+            {/* Маркеры объектов */}
+            {points.map((point) => (
+              <Marker
+                key={point.object_id}
+                position={[point.lat, point.lon]}
+                icon={createCustomIcon(getMarkerColor(point.ml_label))}
+              >
+                <Popup>
+                  <div className="popup-content">
+                    <h3>{point.object_name}</h3>
+                    <div className="popup-row">
+                      <span className="popup-label">Тип:</span>
+                      <span className="popup-value">{point.object_type}</span>
                     </div>
-                  )}
-                  <div className="popup-field">
-                    <strong>Оценка:</strong> {point.quality_grade}
+                    <div className="popup-row">
+                      <span className="popup-label">Трубопровод:</span>
+                      <span className="popup-value">{point.pipeline_id}</span>
+                    </div>
+                    <div className="popup-row">
+                      <span className="popup-label">Метод:</span>
+                      <span className="popup-value">{point.method}</span>
+                    </div>
+                    <div className="popup-row">
+                      <span className="popup-label">Дата:</span>
+                      <span className="popup-value">{point.date}</span>
+                    </div>
+                    <div className="popup-row">
+                      <span className="popup-label">Риск:</span>
+                      <span className={`risk-badge ${point.ml_label}`}>
+                        {getRiskLabel(point.ml_label)}
+                      </span>
+                    </div>
+                    {point.defect_description && (
+                      <div className="popup-defect">
+                        <AlertTriangle size={14} />
+                        {point.defect_description}
+                      </div>
+                    )}
+                    <a href={`/objects/${point.object_id}`} className="popup-link">
+                      Подробнее →
+                    </a>
                   </div>
-                  <a href={`/objects/${point.object_id}`} className="popup-link">
-                    Подробнее →
-                  </a>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
       </div>
     </div>
   );

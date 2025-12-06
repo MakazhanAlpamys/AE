@@ -1,16 +1,29 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import { LayoutDashboard, Map, Box, FileText, Sun, Moon } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import MapView from './components/MapView';
 import ObjectsList from './components/ObjectsList';
 import ObjectDetail from './components/ObjectDetail';
+import Logo from './components/Logo';
 import './App.css';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
-    // Проверка доступности API
+    // Load theme from local storage
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+
+    // Check API availability
     fetch('/api/dashboard')
       .then(() => setIsLoading(false))
       .catch(() => {
@@ -18,6 +31,13 @@ function App() {
         setIsLoading(false);
       });
   }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
 
   if (isLoading) {
     return (
@@ -31,25 +51,35 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <header className="app-header">
+        <header className="app-header glass">
           <div className="header-content">
-            <h1 className="logo">IntegrityOS</h1>
-            <p className="subtitle">Система мониторинга трубопроводов</p>
+            <Logo />
           </div>
-          <nav className="main-nav">
-            <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>
-              Дашборд
-            </NavLink>
-            <NavLink to="/map" className={({ isActive }) => isActive ? 'active' : ''}>
-              Карта
-            </NavLink>
-            <NavLink to="/objects" className={({ isActive }) => isActive ? 'active' : ''}>
-              Объекты
-            </NavLink>
-            <a href="/api/report" target="_blank" rel="noopener noreferrer">
-              Отчеты
-            </a>
-          </nav>
+
+          <div className="header-actions">
+            <nav className="main-nav">
+              <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''} title="Дашборд">
+                <LayoutDashboard size={20} />
+                <span>Дашборд</span>
+              </NavLink>
+              <NavLink to="/map" className={({ isActive }) => isActive ? 'active' : ''} title="Карта">
+                <Map size={20} />
+                <span>Карта</span>
+              </NavLink>
+              <NavLink to="/objects" className={({ isActive }) => isActive ? 'active' : ''} title="Объекты">
+                <Box size={20} />
+                <span>Объекты</span>
+              </NavLink>
+              <a href="/api/report" target="_blank" rel="noopener noreferrer" title="Отчеты">
+                <FileText size={20} />
+                <span>Отчеты</span>
+              </a>
+            </nav>
+
+            <button onClick={toggleTheme} className="theme-toggle" title="Переключить тему">
+              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+          </div>
         </header>
 
         <main className="app-main">
