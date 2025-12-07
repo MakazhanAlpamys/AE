@@ -6,7 +6,7 @@ FastAPI приложение для работы с данными трубоп�
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from typing import Optional, List
 import pandas as pd
 import os
@@ -15,6 +15,7 @@ import uvicorn
 
 from ml_model import MLClassifier
 from report_generator import generate_html_report
+from pdf_generator import generate_pdf_report
 
 app = FastAPI(title="IntegrityOS API", version="1.0.0")
 
@@ -462,6 +463,30 @@ async def generate_report(
             pipeline_id
         )
         return HTMLResponse(content=html)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/report/pdf")
+async def generate_pdf_report_endpoint(
+    pipeline_id: Optional[str] = Query(None, description="Фильтр по трубопроводу")
+):
+    """Генерация PDF отчета"""
+    try:
+        pdf_buffer = generate_pdf_report(
+            pipelines_df, 
+            objects_df, 
+            diagnostics_df,
+            pipeline_id
+        )
+        
+        filename = f"IntegrityOS_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        
+        return StreamingResponse(
+            pdf_buffer,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

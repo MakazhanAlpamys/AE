@@ -156,14 +156,26 @@ def generate_html_report(pipelines_df, objects_df, diagnostics_df, pipeline_id=N
         }}
         
         thead {{
-            background: #2c3e50;
+            background: #1e3a8a;
             color: white;
         }}
         
-        th, td {{
+        th {{
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.9em;
+        }}
+        
+        td {{
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            color: #1e293b;
+            font-weight: 500;
         }}
         
         tr:hover {{

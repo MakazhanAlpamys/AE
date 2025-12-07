@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Map, Box, FileText, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Map, Box, Sun, Moon } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import MapView from './components/MapView';
 import ObjectsList from './components/ObjectsList';
 import ObjectDetail from './components/ObjectDetail';
 import Logo from './components/Logo';
+import ReportsMenu from './components/ReportsMenu';
 import './App.css';
 
 function App() {
@@ -70,15 +71,14 @@ function App() {
                 <Box size={20} />
                 <span>Объекты</span>
               </NavLink>
-              <a href="/api/report" target="_blank" rel="noopener noreferrer" title="Отчеты">
-                <FileText size={20} />
-                <span>Отчеты</span>
-              </a>
             </nav>
 
-            <button onClick={toggleTheme} className="theme-toggle" title="Переключить тему">
-              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-            </button>
+            <div className="header-right-actions">
+              <ReportsMenu />
+              <button onClick={toggleTheme} className="theme-toggle" title="Переключить тему">
+                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+              </button>
+            </div>
           </div>
         </header>
 

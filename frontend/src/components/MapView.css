@@ -141,6 +141,7 @@
   box-shadow: var(--shadow-xl);
   padding: 0;
   overflow: hidden;
+  background: #ffffff !important;
 }
 
 .leaflet-popup-content {
@@ -150,14 +151,15 @@
 
 .popup-content {
   padding: 1.25rem;
+  background: #ffffff;
 }
 
 .popup-content h3 {
   margin: 0 0 1rem 0;
-  color: var(--text-primary);
+  color: #1e293b;
   font-size: 1.125rem;
   font-weight: 600;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #e2e8f0;
   padding-bottom: 0.75rem;
 }
 
@@ -170,21 +172,24 @@
 }
 
 .popup-label {
-  color: var(--text-secondary);
+  color: #64748b;
+  font-weight: 500;
 }
 
 .popup-value {
-  color: var(--text-primary);
-  font-weight: 500;
+  color: #0f172a;
+  font-weight: 600;
 }
 
 .popup-defect {
   margin-top: 0.75rem;
   padding: 0.75rem;
   background: #fef2f2;
+  border: 1px solid #fecaca;
   border-radius: var(--radius-md);
-  color: #b91c1c;
+  color: #991b1b;
   font-size: 0.875rem;
+  font-weight: 600;
   display: flex;
   gap: 0.5rem;
   align-items: flex-start;

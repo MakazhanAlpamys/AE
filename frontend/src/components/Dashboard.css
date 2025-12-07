@@ -63,9 +63,19 @@
   color: var(--primary);
 }
 
+[data-theme="dark"] .stat-icon-wrapper.primary {
+  background-color: rgba(99, 102, 241, 0.2);
+  color: #818cf8;
+}
+
 .stat-icon-wrapper.success {
   background-color: #dcfce7;
   color: var(--success);
+}
+
+[data-theme="dark"] .stat-icon-wrapper.success {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #34d399;
 }
 
 .stat-icon-wrapper.danger {
@@ -73,9 +83,19 @@
   color: var(--danger);
 }
 
+[data-theme="dark"] .stat-icon-wrapper.danger {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
 .stat-icon-wrapper.warning {
   background-color: #fef3c7;
   color: var(--warning);
+}
+
+[data-theme="dark"] .stat-icon-wrapper.warning {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
 }
 
 .stat-icon {
@@ -227,12 +247,24 @@ tr:last-child td {
 }
 
 tr:hover {
-  background: #f8f9fa;
+  background: #f1f5f9;
+}
+
+[data-theme="dark"] tr:hover {
+  background: #334155;
+}
+
+[data-theme="dark"] tr:hover td {
+  color: #f1f5f9;
 }
 
 .danger {
-  color: #e74c3c;
-  font-weight: 600;
+  color: #dc2626;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .danger {
+  color: #f87171;
 }
 
 .loading,
