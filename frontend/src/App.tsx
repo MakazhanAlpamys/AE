@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Map, Box, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Map, Box, Sun, Moon, Upload, TrendingUp } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import MapView from './components/MapView';
 import ObjectsList from './components/ObjectsList';
 import ObjectDetail from './components/ObjectDetail';
 import Logo from './components/Logo';
 import ReportsMenu from './components/ReportsMenu';
+import Notifications from './components/Notifications';
+import ImportData from './components/ImportData';
+import Predictions from './components/Predictions';
 import './App.css';
 
 function App() {
@@ -71,10 +74,19 @@ function App() {
                 <Box size={20} />
                 <span>Объекты</span>
               </NavLink>
+              <NavLink to="/predictions" className={({ isActive }) => isActive ? 'active' : ''} title="Прогнозы">
+                <TrendingUp size={20} />
+                <span>Прогнозы</span>
+              </NavLink>
+              <NavLink to="/import" className={({ isActive }) => isActive ? 'active' : ''} title="Импорт данных">
+                <Upload size={20} />
+                <span>Импорт</span>
+              </NavLink>
             </nav>
 
             <div className="header-right-actions">
               <ReportsMenu />
+              <Notifications apiUrl="http://localhost:8000" />
               <button onClick={toggleTheme} className="theme-toggle" title="Переключить тему">
                 {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
               </button>
@@ -88,6 +100,8 @@ function App() {
             <Route path="/map" element={<MapView />} />
             <Route path="/objects" element={<ObjectsList />} />
             <Route path="/objects/:objectId" element={<ObjectDetail />} />
+            <Route path="/predictions" element={<Predictions />} />
+            <Route path="/import" element={<ImportData />} />
           </Routes>
         </main>
 

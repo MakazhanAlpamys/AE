@@ -189,10 +189,41 @@
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-primary);
+  flex: 1;
 }
 
 .section-header svg {
   color: var(--text-secondary);
+}
+
+.sort-buttons {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.sort-btn {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.sort-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
 }
 
 .chart-container {

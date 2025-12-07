@@ -4,7 +4,7 @@ IntegrityOS Backend API
 FastAPI приложение для работы с данными трубопроводов
 """
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse
 from typing import Optional, List
@@ -16,6 +16,9 @@ import uvicorn
 from ml_model import MLClassifier
 from report_generator import generate_html_report
 from pdf_generator import generate_pdf_report
+from notifications import notification_manager, NotificationType
+from import_handler import DataImporter
+from predictive_analytics import PredictiveAnalytics
 
 app = FastAPI(title="IntegrityOS API", version="1.0.0")
 
@@ -34,6 +37,8 @@ pipelines_df = None
 objects_df = None
 diagnostics_df = None
 ml_classifier = None
+data_importer = DataImporter(DATA_DIR)
+predictive_analytics = PredictiveAnalytics()
 
 
 def validate_data():
@@ -482,11 +487,326 @@ async def generate_pdf_report_endpoint(
         
         filename = f"IntegrityOS_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         
+        # Создаем уведомление об успешной генерации PDF
+        notification_manager.create_report_notification("PDF", pipeline_id)
+        
         return StreamingResponse(
             pdf_buffer,
             media_type="application/pdf",
             headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ==================== NOTIFICATIONS API ====================
+
+@app.get("/api/notifications")
+async def get_notifications(
+    unread_only: bool = Query(False, description="Только непрочитанные"),
+    limit: Optional[int] = Query(None, description="Лимит записей")
+):
+    """Получение списка уведомлений"""
+    try:
+        notifications = notification_manager.get_notifications(
+            unread_only=unread_only,
+            limit=limit
+        )
+        return {
+            "notifications": notifications,
+            "total": len(notifications),
+            "unread_count": notification_manager.get_unread_count()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/notifications/unread-count")
+async def get_unread_count():
+    """Получение количества непрочитанных уведомлений"""
+    try:
+        return {
+            "unread_count": notification_manager.get_unread_count()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/notifications/{notification_id}/read")
+async def mark_notification_as_read(notification_id: int):
+    """Пометить уведомление как прочитанное"""
+    try:
+        success = notification_manager.mark_as_read(notification_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Уведомление не найдено")
+        
+        return {
+            "success": True,
+            "message": "Уведомление отмечено как прочитанное"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/notifications/read-all")
+async def mark_all_as_read():
+    """Пометить все уведомления как прочитанные"""
+    try:
+        count = notification_manager.mark_all_as_read()
+        return {
+            "success": True,
+            "marked_count": count,
+            "message": f"Отмечено {count} уведомлений"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/notifications/{notification_id}")
+async def delete_notification(notification_id: int):
+    """Удаление уведомления"""
+    try:
+        success = notification_manager.delete_notification(notification_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Уведомление не найдено")
+        
+        return {
+            "success": True,
+            "message": "Уведомление удалено"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/notifications/create")
+async def create_notification(
+    message: str = Query(..., description="Текст уведомления"),
+    notification_type: str = Query("info", description="Тип уведомления"),
+):
+    """Создание нового уведомления (для тестирования)"""
+    try:
+        notification = notification_manager.create_notification(
+            message=message,
+            notification_type=NotificationType(notification_type)
+        )
+        return {
+            "success": True,
+            "notification": notification
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ==================== IMPORT API ====================
+
+@app.post("/api/import/objects")
+async def import_objects(file: UploadFile = File(...)):
+    """Импорт таблицы объектов из CSV/XLSX"""
+    try:
+        # Проверка формата файла
+        if not (file.filename.endswith('.csv') or file.filename.endswith('.xlsx')):
+            raise HTTPException(
+                status_code=400,
+                detail="Неподдерживаемый формат. Используйте CSV или XLSX"
+            )
+        
+        # Читаем содержимое
+        content = await file.read()
+        
+        # Импортируем
+        result = data_importer.import_objects(content, file.filename)
+        
+        # Если успешно - перезагружаем данные
+        if result['success']:
+            load_data()
+            notification_manager.create_notification(
+                message=f"Импортировано {result['rows_imported']} объектов из {file.filename}",
+                notification_type=NotificationType.SUCCESS
+            )
+        else:
+            notification_manager.create_notification(
+                message=f"Ошибка импорта {file.filename}: {'; '.join(result['errors'][:2])}",
+                notification_type=NotificationType.ERROR
+            )
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка импорта: {str(e)}")
+
+
+@app.post("/api/import/diagnostics")
+async def import_diagnostics(file: UploadFile = File(...)):
+    """Импорт таблицы диагностик из CSV/XLSX"""
+    try:
+        # Проверка формата файла
+        if not (file.filename.endswith('.csv') or file.filename.endswith('.xlsx')):
+            raise HTTPException(
+                status_code=400,
+                detail="Неподдерживаемый формат. Используйте CSV или XLSX"
+            )
+        
+        # Читаем содержимое
+        content = await file.read()
+        
+        # Импортируем
+        result = data_importer.import_diagnostics(content, file.filename)
+        
+        # Если успешно - перезагружаем данные
+        if result['success']:
+            load_data()
+            
+            # Переобучаем ML модель
+            global ml_classifier
+            ml_classifier = MLClassifier()
+            ml_classifier.train(diagnostics_df)
+            
+            notification_manager.create_notification(
+                message=f"Импортировано {result['rows_imported']} диагностик из {file.filename}. ML модель переобучена.",
+                notification_type=NotificationType.SUCCESS
+            )
+        else:
+            notification_manager.create_notification(
+                message=f"Ошибка импорта {file.filename}: {'; '.join(result['errors'][:2])}",
+                notification_type=NotificationType.ERROR
+            )
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка импорта: {str(e)}")
+
+
+@app.get("/api/import/log")
+async def get_import_log():
+    """Получить историю импорта файлов"""
+    try:
+        return {
+            "log": data_importer.get_import_log()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/import/validate-preview")
+async def validate_and_preview(file: UploadFile = File(...)):
+    """Предпросмотр файла перед импортом (первые 10 строк)"""
+    try:
+        content = await file.read()
+        
+        # Читаем файл
+        if file.filename.endswith('.csv'):
+            import io
+            df = pd.read_csv(io.BytesIO(content), encoding='utf-8')
+        elif file.filename.endswith('.xlsx'):
+            df = pd.read_excel(io.BytesIO(content))
+        else:
+            raise HTTPException(status_code=400, detail="Неподдерживаемый формат")
+        
+        return {
+            "columns": df.columns.tolist(),
+            "row_count": len(df),
+            "preview": df.head(10).to_dict('records')
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка чтения файла: {str(e)}")
+
+
+# ============================================
+# PREDICTIVE ANALYTICS ENDPOINTS
+# ============================================
+
+@app.get("/api/predictions/object/{object_id}")
+async def predict_object_failure(object_id: int):
+    """Прогноз для конкретного объекта"""
+    try:
+        prediction = predictive_analytics.predict_next_failure(diagnostics_df, object_id)
+        
+        if prediction['status'] == 'success':
+            # Добавляем информацию об объекте
+            obj_info = objects_df[objects_df['object_id'] == object_id]
+            if not obj_info.empty:
+                obj_data = obj_info.iloc[0]
+                prediction['object_name'] = obj_data['object_name']
+                prediction['object_type'] = obj_data['object_type']
+                prediction['pipeline_id'] = obj_data['pipeline_id']
+        
+        return prediction
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/predictions/pipeline/{pipeline_id}")
+async def predict_pipeline_status(pipeline_id: str):
+    """Прогноз для всего трубопровода"""
+    try:
+        forecast = predictive_analytics.get_pipeline_forecast(
+            diagnostics_df, objects_df, pipeline_id
+        )
+        return forecast
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/predictions/top-risks")
+async def get_top_risks(limit: int = Query(20, ge=1, le=100)):
+    """Топ объектов по риску"""
+    try:
+        risks = predictive_analytics.get_top_risks(
+            diagnostics_df, objects_df, limit
+        )
+        return {
+            "total": len(risks),
+            "risks": risks
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/predictions/dashboard")
+async def get_predictions_dashboard():
+    """Общая статистика для дашборда прогнозов"""
+    try:
+        # Топ-10 рисков
+        top_risks = predictive_analytics.get_top_risks(diagnostics_df, objects_df, 10)
+        
+        # Статистика по трубопроводам
+        pipeline_forecasts = []
+        for _, pipeline in pipelines_df.iterrows():
+            forecast = predictive_analytics.get_pipeline_forecast(
+                diagnostics_df, objects_df, pipeline['pipeline_id']
+            )
+            if forecast['status'] == 'success':
+                pipeline_forecasts.append({
+                    'pipeline_id': pipeline['pipeline_id'],
+                    'pipeline_name': pipeline['name'],
+                    'critical_count': forecast['critical_objects_count'],
+                    'defect_rate': forecast['defect_rate'],
+                    'predicted_defects': forecast['predicted_defects_next_year']
+                })
+        
+        # Общая статистика
+        high_risk_count = len([r for r in top_risks if r['risk_probability'] > 0.6])
+        medium_risk_count = len([r for r in top_risks if 0.3 < r['risk_probability'] <= 0.6])
+        
+        return {
+            "top_risks": top_risks,
+            "pipeline_forecasts": pipeline_forecasts,
+            "summary": {
+                "high_risk_objects": high_risk_count,
+                "medium_risk_objects": medium_risk_count,
+                "total_analyzed": len(objects_df)
+            }
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

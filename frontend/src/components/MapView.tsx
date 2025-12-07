@@ -62,7 +62,9 @@ const MapView = () => {
     pipeline_id: '',
     ml_label: '',
     method: '',
-    defect_only: true
+    defect_only: true,
+    date_from: '',
+    date_to: ''
   });
 
   useEffect(() => {
@@ -75,6 +77,8 @@ const MapView = () => {
       if (filters.pipeline_id) params.append('pipeline_id', filters.pipeline_id);
       if (filters.ml_label) params.append('ml_label', filters.ml_label);
       if (filters.method) params.append('method', filters.method);
+      if (filters.date_from) params.append('date_from', filters.date_from);
+      if (filters.date_to) params.append('date_to', filters.date_to);
       params.append('defect_only', filters.defect_only.toString());
 
       const response = await axios.get(`/api/map-data?${params.toString()}`);
@@ -160,12 +164,36 @@ const MapView = () => {
               className="filter-select"
             >
               <option value="">Все методы</option>
-              <option value="VIK">VIK</option>
-              <option value="UZK">UZK</option>
-              <option value="MFL">MFL</option>
-              <option value="TFI">TFI</option>
-              <option value="GEO">GEO</option>
+              <option value="VIK">VIK - Визуальный контроль</option>
+              <option value="UZK">UZK - Ультразвуковой контроль</option>
+              <option value="MFL">MFL - Магнитная дефектоскопия</option>
+              <option value="TFI">TFI - Трубная инспекция</option>
+              <option value="GEO">GEO - Геодезический контроль</option>
+              <option value="MPK">MPK - Магнитопорошковый</option>
+              <option value="PVK">PVK - Проникающие вещества</option>
+              <option value="RGK">RGK - Радиографический</option>
+              <option value="TVK">TVK - Телевизионный контроль</option>
+              <option value="VIBRO">VIBRO - Вибродиагностика</option>
+              <option value="UTWM">UTWM - УЗ толщинометрия</option>
+              <option value="AE">AE - Акустическая эмиссия</option>
+              <option value="TOFD">TOFD - Дифракционно-временной</option>
             </select>
+
+            <input
+              type="date"
+              value={filters.date_from}
+              onChange={(e) => setFilters({ ...filters, date_from: e.target.value })}
+              className="filter-select"
+              placeholder="Дата от"
+            />
+
+            <input
+              type="date"
+              value={filters.date_to}
+              onChange={(e) => setFilters({ ...filters, date_to: e.target.value })}
+              className="filter-select"
+              placeholder="Дата до"
+            />
 
             <label className="checkbox-label">
               <input

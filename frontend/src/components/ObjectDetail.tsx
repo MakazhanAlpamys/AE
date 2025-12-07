@@ -24,6 +24,8 @@ const ObjectDetail = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sortBy, setSortBy] = useState<'date' | 'depth'>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   useEffect(() => {
     fetchObjectDetail();
@@ -45,6 +47,29 @@ const ObjectDetail = () => {
   if (!data) return null;
 
   const { object, diagnostics, history, total_inspections, defects_count } = data;
+
+  // Сортировка диагностик
+  const sortedDiagnostics = [...diagnostics].sort((a, b) => {
+    if (sortBy === 'depth') {
+      const depthA = a.param1 || 0;
+      const depthB = b.param1 || 0;
+      return sortOrder === 'desc' ? depthB - depthA : depthA - depthB;
+    } else {
+      // Сортировка по дате
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    }
+  });
+
+  const toggleSort = (field: 'date' | 'depth') => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortBy(field);
+      setSortOrder('desc');
+    }
+  };
 
   const getRiskClass = (mlLabel: string) => {
     switch (mlLabel) {
@@ -180,6 +205,22 @@ const ObjectDetail = () => {
         <div className="section-header">
           <FileText size={20} />
           <h2>История диагностик</h2>
+          <div className="sort-buttons">
+            <button 
+              className={`sort-btn ${sortBy === 'date' ? 'active' : ''}`}
+              onClick={() => toggleSort('date')}
+              title="Сортировка по дате"
+            >
+              Дата {sortBy === 'date' && (sortOrder === 'desc' ? '↓' : '↑')}
+            </button>
+            <button 
+              className={`sort-btn ${sortBy === 'depth' ? 'active' : ''}`}
+              onClick={() => toggleSort('depth')}
+              title="Сортировка по глубине дефекта"
+            >
+              Глубина {sortBy === 'depth' && (sortOrder === 'desc' ? '↓' : '↑')}
+            </button>
+          </div>
         </div>
         <div className="diagnostics-table-container">
           <table className="diagnostics-table">
@@ -195,7 +236,7 @@ const ObjectDetail = () => {
               </tr>
             </thead>
             <tbody>
-              {diagnostics.map((diag: any) => (
+              {sortedDiagnostics.map((diag: any) => (
                 <tr key={diag.diag_id} className={diag.defect_found ? 'has-defect' : ''}>
                   <td>{diag.date}</td>
                   <td><span className="method-badge">{diag.method}</span></td>

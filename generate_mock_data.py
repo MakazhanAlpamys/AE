@@ -8,8 +8,8 @@ import random
 import os
 
 # Настройки генерации
-NUM_OBJECTS = 150
-NUM_DIAGNOSTICS = 2000
+NUM_OBJECTS = 800  # Увеличено с 150
+NUM_DIAGNOSTICS = 10000  # Увеличено с 2000
 
 # Казахстанские города и координаты для трубопроводов
 PIPELINES = {
@@ -46,9 +46,11 @@ MATERIALS = ["Ст3", "09Г2С", "17Г1С", "10Г2ФБ", "Х70", "Х65"]
 OBJECT_TYPES = ["pipeline_section", "crane", "compressor"]
 OBJECT_TYPE_WEIGHTS = [0.7, 0.2, 0.1]
 
-# Методы диагностики
+# Методы диагностики (критичные помечены как приоритетные)
+# UZK, RGK, MFL, UTWM, TFI - критичные методы с повышенной точностью
 METHODS = ["VIK", "UZK", "MFL", "TFI", "GEO", "MPK", "PVK", "RGK", "TVK", "VIBRO", "UTWM"]
-METHOD_WEIGHTS = [0.15, 0.20, 0.25, 0.10, 0.08, 0.05, 0.05, 0.03, 0.03, 0.03, 0.03]
+METHOD_WEIGHTS = [0.12, 0.22, 0.25, 0.10, 0.06, 0.04, 0.04, 0.05, 0.03, 0.03, 0.04]
+CRITICAL_METHODS = ["UZK", "RGK", "MFL", "UTWM", "TFI"]  # Для ML признака
 
 # Типы дефектов
 DEFECT_TYPES = [
