@@ -1,103 +1,103 @@
-# IntegrityOS - Система мониторинга трубопроводов
+# IntegrityOS - Pipeline Monitoring System
 
-**Версия 2.0** | MVP платформа для визуализации, хранения и анализа данных обследований магистральных трубопроводов
+**Version 2.0** | MVP platform for visualization, storage, and analysis of main pipeline inspection data
 
-## 🎯 Описание проекта
+## 🎯 Project Description
 
-IntegrityOS — это веб-платформа для мониторинга технического состояния магистральных трубопроводов. Система демонстрирует полный цикл работы с данными диагностики:
+IntegrityOS is a web platform for monitoring the technical condition of main pipelines. The system demonstrates a complete diagnostic data workflow:
 
-- ✅ Импорт и обработка CSV-файлов с данными обследований ([📖 Руководство по импорту](IMPORT_GUIDE.md))
-- 🗺️ Отображение объектов и дефектов на интерактивной карте
-- 📊 Дашборд со статистикой и аналитикой
-- 🔍 Поиск и фильтрация объектов по различным параметрам
-- 📝 Детальные карточки объектов с историей диагностик
-- 🤖 **ML-классификация с 15 признаками** (точность >95%)
-- 📄 Генерация отчетов в HTML и PDF форматах
-- 🔔 **Система уведомлений в реальном времени**
-- 🐳 **Docker Compose для быстрого развертывания**
-- 🎨 Светлая и темная темы с оптимизированной контрастностью
-- 📱 Адаптивный дизайн для всех устройств
-- 📈 Генерация 10,000 тестовых записей для обучения
+- ✅ Import and processing of CSV files with inspection data ([📖 Import Guide](IMPORT_GUIDE.md))
+- 🗺️ Display of objects and defects on an interactive map
+- 📊 Dashboard with statistics and analytics
+- 🔍 Search and filtering of objects by various parameters
+- 📝 Detailed object cards with diagnostic history
+- 🤖 **ML classification with 15 features** (accuracy >95%)
+- 📄 Report generation in HTML and PDF formats
+- 🔔 **Real-time notification system**
+- 🐳 **Docker Compose for quick deployment**
+- 🎨 Light and dark themes with optimized contrast
+- 📱 Responsive design for all devices
+- 📈 Generation of 10,000 test records for training
 
-> 💡 **Возникли проблемы с импортом?** Читайте подробное [руководство по импорту данных](IMPORT_GUIDE.md)
+> 💡 **Having import issues?** Read the detailed [data import guide](IMPORT_GUIDE.md)
 
-## 📸 Скриншоты интерфейса
+## 📸 Interface Screenshots
 
-### Светлая тема
-![Дашборд - Светлая тема](1.png)
-*Панель управления с полной статистикой, графиками и виджетами*
+### Light Theme
+![Dashboard - Light Theme](1.png)
+*Control panel with complete statistics, charts, and widgets*
 
-### Темная тема
-![Дашборд - Темная тема](2.png)
-*Комфортный режим для работы в темное время суток*
+### Dark Theme
+![Dashboard - Dark Theme](2.png)
+*Comfortable mode for working at night*
 
 ---
 
-## 🏗️ Архитектура
+## 🏗️ Architecture
 
 ```
 IntegrityOS/
-├── backend/                    # FastAPI сервер
-│   ├── app.py                 # Главное приложение с API endpoints
-│   ├── ml_model.py            # ML-модель с 15 признаками (точность >95%)
-│   ├── report_generator.py    # Генератор HTML отчетов
-│   ├── import_handler.py      # Модуль импорта CSV/XLSX с валидацией
-│   ├── notifications.py       # Система уведомлений
-│   ├── requirements.txt       # Python зависимости
-│   └── Dockerfile             # Docker образ для backend
-├── frontend/                  # React приложение (Vite + TypeScript)
+├── backend/                    # FastAPI server
+│   ├── app.py                 # Main application with API endpoints
+│   ├── ml_model.py            # ML model with 15 features (accuracy >95%)
+│   ├── report_generator.py    # HTML report generator
+│   ├── import_handler.py      # CSV/XLSX import module with validation
+│   ├── notifications.py       # Notification system
+│   ├── requirements.txt       # Python dependencies
+│   └── Dockerfile             # Docker image for backend
+├── frontend/                  # React application (Vite + TypeScript)
 │   ├── src/
-│   │   ├── components/       # React компоненты
-│   │   │   ├── Dashboard.tsx        # Главный дашборд
-│   │   │   ├── MapView.tsx          # Интерактивная карта
-│   │   │   ├── ObjectsList.tsx      # Список объектов
-│   │   │   ├── ObjectDetail.tsx     # Детали объекта
-│   │   │   ├── ImportData.tsx       # Импорт CSV/XLSX с валидацией
-│   │   │   ├── ReportsMenu.tsx      # Меню выбора отчетов
-│   │   │   ├── Notifications.tsx    # Компонент уведомлений
-│   │   │   └── Logo.tsx             # Логотип
-│   │   ├── App.tsx           # Главный компонент
-│   │   └── index.css         # Глобальные стили с темами
-│   ├── package.json          # Node.js зависимости
-│   └── Dockerfile            # Docker образ для frontend
-├── data/                     # CSV файлы с данными
-│   ├── Pipelines.csv         # Трубопроводы (3 шт)
-│   ├── Objects.csv           # Объекты контроля (800 шт)
-│   ├── Diagnostics.csv       # Результаты диагностик (10,000 шт)
-│   └── notifications.json    # Файл хранения уведомлений
-├── docker-compose.yml        # Docker Compose конфигурация
-└── generate_mock_data.py     # Генератор 10,000 тестовых записей
+│   │   ├── components/       # React components
+│   │   │   ├── Dashboard.tsx        # Main dashboard
+│   │   │   ├── MapView.tsx          # Interactive map
+│   │   │   ├── ObjectsList.tsx      # Object list
+│   │   │   ├── ObjectDetail.tsx     # Object details
+│   │   │   ├── ImportData.tsx       # CSV/XLSX import with validation
+│   │   │   ├── ReportsMenu.tsx      # Report selection menu
+│   │   │   ├── Notifications.tsx    # Notifications component
+│   │   │   └── Logo.tsx             # Logo
+│   │   ├── App.tsx           # Main component
+│   │   └── index.css         # Global styles with themes
+│   ├── package.json          # Node.js dependencies
+│   └── Dockerfile            # Docker image for frontend
+├── data/                     # CSV files with data
+│   ├── Pipelines.csv         # Pipelines (3 units)
+│   ├── Objects.csv           # Control objects (800 units)
+│   ├── Diagnostics.csv       # Diagnostic results (10,000 units)
+│   └── notifications.json    # Notification storage file
+├── docker-compose.yml        # Docker Compose configuration
+└── generate_mock_data.py     # Generator of 10,000 test records
 ```
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
-### Вариант 1: Docker Compose (Рекомендуется) 🐳
+### Option 1: Docker Compose (Recommended) 🐳
 
-Самый простой способ запустить проект:
+The easiest way to run the project:
 
 ```bash
-# 1. Генерация тестовых данных (10,000 записей)
+# 1. Generate test data (10,000 records)
 python generate_mock_data.py
 
-# 2. Запуск всех сервисов
+# 2. Start all services
 docker-compose up -d
 
-# 3. Остановка сервисов
+# 3. Stop services
 docker-compose down
 ```
 
-После запуска:
+After startup:
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
 
-### Вариант 2: Локальная установка
+### Option 2: Local Installation
 
-### Требования
+### Requirements
 
 - Python 3.8+
 - Node.js 16+
-- npm или yarn
+- npm or yarn
 
 ### Virtual Environment (venv)
 
@@ -109,323 +109,323 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-### Установка Backend
+### Backend Installation
 
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-### Запуск Backend
+### Backend Startup
 
 ```bash
 cd backend
 python app.py
 ```
 
-Backend будет доступен по адресу: `http://localhost:8000`
+Backend will be available at: `http://localhost:8000`
 
-API документация (Swagger): `http://localhost:8000/docs`
+API documentation (Swagger): `http://localhost:8000/docs`
 
-### Установка Frontend
+### Frontend Installation
 
 ```bash
 cd frontend
 npm install
 ```
 
-### Запуск Frontend
+### Frontend Startup
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-Frontend будет доступен по адресу: `http://localhost:5173`
+Frontend will be available at: `http://localhost:5173`
 
-## 📊 Структура данных
+## 📊 Data Structure
 
-### Таблица трубопроводов (Pipelines.csv)
+### Pipelines Table (Pipelines.csv)
 
-| Поле | Тип | Описание |
+| Field | Type | Description |
 |------|-----|----------|
-| pipeline_id | string | Идентификатор трубопровода |
-| name | string | Наименование |
-| length_km | int | Длина в км |
-| diameter_mm | int | Диаметр в мм |
-| start_point | string | Начальная точка |
-| end_point | string | Конечная точка |
-| year_built | int | Год строительства |
-| operator | string | Оператор |
+| pipeline_id | string | Pipeline identifier |
+| name | string | Name |
+| length_km | int | Length in km |
+| diameter_mm | int | Diameter in mm |
+| start_point | string | Start point |
+| end_point | string | End point |
+| year_built | int | Year of construction |
+| operator | string | Operator |
 
-### Таблица объектов (Objects.csv)
+### Objects Table (Objects.csv)
 
-| Поле | Тип | Описание |
+| Field | Type | Description |
 |------|-----|----------|
-| object_id | int | ID объекта |
-| object_name | string | Наименование |
+| object_id | int | Object ID |
+| object_name | string | Name |
 | object_type | enum | crane / compressor / pipeline_section |
-| pipeline_id | string | ID трубопровода |
-| lat | float | Широта |
-| lon | float | Долгота |
-| year | int | Год ввода в эксплуатацию |
-| material | string | Материал |
+| pipeline_id | string | Pipeline ID |
+| lat | float | Latitude |
+| lon | float | Longitude |
+| year | int | Year of commissioning |
+| material | string | Material |
 
-### Таблица диагностик (Diagnostics.csv)
+### Diagnostics Table (Diagnostics.csv)
 
-| Поле | Тип | Описание |
+| Field | Type | Description |
 |------|-----|----------|
-| diag_id | int | ID записи |
-| object_id | int | ID объекта |
-| method | enum | Метод контроля (VIK/UZK/MFL и др.) |
-| date | date | Дата контроля |
-| defect_found | bool | Обнаружен дефект |
-| defect_description | string | Описание дефекта |
-| quality_grade | enum | Оценка качества |
-| param1 | float | Глубина дефекта (%) |
-| param2 | float | Длина (мм) |
-| param3 | float | Ширина (мм) |
-| temperature | float | Температура при обследовании (°C) |
-| humidity | float | Влажность (%) |
-| illumination | float | Освещенность (лк) |
+| diag_id | int | Record ID |
+| object_id | int | Object ID |
+| method | enum | Control method (VIK/UZK/MFL etc.) |
+| date | date | Control date |
+| defect_found | bool | Defect found |
+| defect_description | string | Defect description |
+| quality_grade | enum | Quality assessment |
+| param1 | float | Defect depth (%) |
+| param2 | float | Length (mm) |
+| param3 | float | Width (mm) |
+| temperature | float | Temperature during inspection (°C) |
+| humidity | float | Humidity (%) |
+| illumination | float | Illumination (lux) |
 | ml_label | enum | normal / medium / high |
 
-**Объем данных:**
-- 🔹 3 трубопровода (1,495 км общей длины)
-- 🔹 800 объектов контроля (увеличено с 150)
-- 🔹 10,000 диагностических записей (увеличено с 2,000)
-- 🔹 11 методов неразрушающего контроля
-- 🔹 Исторические данные за 10 лет (2015-2025)
+**Data Volume:**
+- 🔹 3 pipelines (1,495 km total length)
+- 🔹 800 control objects (increased from 150)
+- 🔹 10,000 diagnostic records (increased from 2,000)
+- 🔹 11 non-destructive testing methods
+- 🔹 Historical data for 10 years (2015-2025)
 
-## 🎨 Функциональные возможности
+## 🎨 Features
 
-### 1. Дашборд
-- Общая статистика по объектам и обследованиям
-- Распределение дефектов по методам контроля
-- Распределение по критичности (normal/medium/high)
-- Топ-5 объектов с наибольшим количеством дефектов
-- Динамика обследований по годам
-- Статистика по каждому трубопроводу
+### 1. Dashboard
+- Overall statistics on objects and inspections
+- Distribution of defects by control methods
+- Distribution by criticality (normal/medium/high)
+- Top-5 objects with the most defects
+- Inspection dynamics by year
+- Statistics for each pipeline
 
-### 2. Импорт данных 📥
-- **Drag & Drop загрузка** - перетащите CSV/XLSX файлы или выберите вручную
-- **Поддержка форматов** - CSV и Excel (.xlsx)
-- **Типы данных**:
-  - Объекты контроля (Objects)
-  - Результаты диагностик (Diagnostics)
-- **Валидация данных**:
-  - Проверка обязательных колонок
-  - Контроль дубликатов
-  - Валидация координат (latitude/longitude)
-  - Проверка методов контроля (13 методов)
-  - Валидация внешних ключей
-  - Проверка формата дат
-- **Предпросмотр** - показ первых 10 строк перед импортом
-- **Логи импорта**:
-  - ✅ Успешные операции (количество записей)
-  - ⚠️ Предупреждения (дубликаты, некритичные ошибки)
-  - ❌ Ошибки валидации (подробное описание)
-- **Шаблоны** - скачивание примеров CSV файлов
-- **Автообновление** - автоматическое обновление дашборда после импорта
-- **ML переобучение** - автоматическое обучение модели при импорте диагностик
+### 2. Data Import 📥
+- **Drag & Drop upload** - drag CSV/XLSX files or select manually
+- **Format support** - CSV and Excel (.xlsx)
+- **Data types**:
+  - Control objects (Objects)
+  - Diagnostic results (Diagnostics)
+- **Data validation**:
+  - Required column checking
+  - Duplicate control
+  - Coordinate validation (latitude/longitude)
+  - Control method validation (13 methods)
+  - Foreign key validation
+  - Date format verification
+- **Preview** - display first 10 rows before import
+- **Import logs**:
+  - ✅ Successful operations (record count)
+  - ⚠️ Warnings (duplicates, non-critical errors)
+  - ❌ Validation errors (detailed description)
+- **Templates** - download sample CSV files
+- **Auto-refresh** - automatic dashboard update after import
+- **ML retraining** - automatic model training on diagnostic import
 
-### 3. Интерактивная карта
-- Отображение трубопроводов на карте Казахстана
-- Маркеры объектов с цветовой индикацией критичности
-- Фильтрация по трубопроводу, методу контроля (13 методов), уровню риска
-- Фильтрация по дате обследования (от/до)
-- Всплывающие карточки с детальной информацией
-- Линии трубопроводов с привязкой к реальным координатам
+### 3. Interactive Map
+- Display of pipelines on Kazakhstan map
+- Object markers with color-coded criticality
+- Filtering by pipeline, control method (13 methods), risk level
+- Filtering by inspection date (from/to)
+- Popup cards with detailed information
+- Pipeline lines with real coordinate binding
 
-### 4. Список объектов
-- Карточки всех объектов контроля
-- Фильтрация по трубопроводу и типу объекта
-- Переход к детальной информации
+### 4. Objects List
+- Cards of all control objects
+- Filtering by pipeline and object type
+- Navigate to detailed information
 
-### 5. Карточка объекта
-- Подробная информация об объекте
-- История всех обследований
-- График динамики дефектов по годам
-- Таблица диагностик с полными параметрами
-- Сортировка диагностик по дате или глубине дефекта (возрастание/убывание)
-- Цветовая индикация критичности
+### 5. Object Card
+- Detailed object information
+- History of all inspections
+- Defect dynamics chart by year
+- Diagnostics table with full parameters
+- Diagnostics sorting by date or defect depth (ascending/descending)
+- Color-coded criticality indication
 
-### 6. ML-классификация
-- RandomForest модель для предсказания критичности
-- Обучение на исторических данных
-- Fallback на rule-based классификацию
-- API endpoint для предсказания новых дефектов
-- Отображение вероятностей для каждого класса (%)
-- Показ уровня уверенности модели (confidence)
+### 6. ML Classification
+- RandomForest model for criticality prediction
+- Training on historical data
+- Fallback to rule-based classification
+- API endpoint for predicting new defects
+- Display of probabilities for each class (%)
+- Show model confidence level
 
-### 7. Предиктивная аналитика 🔮
-- **Прогнозирование критических дефектов**:
-  - Анализ тренда развития дефектов (линейная регрессия)
-  - Предсказание глубины дефекта на год вперед
-  - Расчет вероятности критического отказа
-- **Топ объектов по риску**:
-  - Ранжирование объектов по вероятности отказа
-  - Визуализация тренда (ухудшение/улучшение/стабильно)
-  - Сравнение текущей и прогнозируемой глубины
-- **Рекомендации по обследованиям**:
-  - Автоматический расчет даты следующего контроля
-  - Подбор оптимального метода (VIK/UZK/MFL)
-  - Приоритизация по срочности
-- **Прогноз по трубопроводам**:
-  - Общая оценка состояния трубопровода
-  - Количество критичных объектов
-  - Прогноз количества дефектов на следующий год
-  - Уровень дефектности (defect rate)
-- **Интерактивные детали**:
-  - Клик по объекту - детальный прогноз в модальном окне
-  - Фильтрация по трубопроводам
-  - Цветовая индикация рисков (красный/желтый/зеленый)
+### 7. Predictive Analytics 🔮
+- **Critical defect forecasting**:
+  - Defect development trend analysis (linear regression)
+  - Defect depth prediction one year ahead
+  - Critical failure probability calculation
+- **Top objects by risk**:
+  - Objects ranked by failure probability
+  - Trend visualization (deteriorating/improving/stable)
+  - Current vs predicted depth comparison
+- **Inspection recommendations**:
+  - Automatic next control date calculation
+  - Optimal method selection (VIK/UZK/MFL)
+  - Prioritization by urgency
+- **Pipeline forecast**:
+  - Overall pipeline condition assessment
+  - Number of critical objects
+  - Forecast of defects for next year
+  - Defect rate level
+- **Interactive details**:
+  - Click on object - detailed forecast in modal window
+  - Filtering by pipelines
+  - Color-coded risk indication (red/yellow/green)
 
-### 8. Генерация отчетов (HTML и PDF)
-- **Меню выбора формата** - удобный интерфейс для генерации отчетов
-- **HTML отчеты** - открываются в новой вкладке браузера
-  - Красивый дизайн с градиентами и таблицами
-  - Статистика по всем показателям
-  - Топ-20 дефектов высокого риска
-- **PDF отчеты** - скачиваются автоматически
-  - Профессиональный макет с таблицами
-  - Транслитерация кириллицы в латиницу
-  - 3 страницы с полной статистикой
-- **Фильтрация** - отчеты по конкретному трубопроводу или общие
-- **Уведомления** - автоматическое уведомление после создания отчета
+### 8. Report Generation (HTML and PDF)
+- **Format selection menu** - convenient interface for report generation
+- **HTML reports** - open in new browser tab
+  - Beautiful design with gradients and tables
+  - Statistics for all indicators
+  - Top-20 high-risk defects
+- **PDF reports** - automatic download
+  - Professional layout with tables
+  - Cyrillic to Latin transliteration
+  - 3 pages with complete statistics
+- **Filtering** - reports by specific pipeline or general
+- **Notifications** - automatic notification after report creation
 
-### 9. Система уведомлений 🔔
-- **В реальном времени** - обновление каждые 30 секунд
-- **Типы уведомлений**:
-  - ℹ️ INFO - информационные сообщения
-  - ⚠️ WARNING - предупреждения о средних рисках
-  - 🚨 ERROR - критические дефекты
-  - ✅ SUCCESS - успешные операции
-- **Счетчик непрочитанных** - визуальный индикатор
-- **Фильтрация** - показать только непрочитанные
-- **Пометка прочитанным** - одиночная или массовая
-- **Удаление уведомлений** - очистка истории
-- **Автоматические уведомления**:
-  - Обнаружение критических дефектов
-  - Генерация отчетов
-  - Обучение ML модели
-  - Успешный импорт данных
-- **Хранение** - JSON файл (без БД)
+### 9. Notification System 🔔
+- **Real-time** - updates every 30 seconds
+- **Notification types**:
+  - ℹ️ INFO - informational messages
+  - ⚠️ WARNING - medium risk warnings
+  - 🚨 ERROR - critical defects
+  - ✅ SUCCESS - successful operations
+- **Unread counter** - visual indicator
+- **Filtering** - show only unread
+- **Mark as read** - single or bulk
+- **Delete notifications** - clear history
+- **Automatic notifications**:
+  - Critical defect detection
+  - Report generation
+  - ML model training
+  - Successful data import
+- **Storage** - JSON file (no database)
 
-### 10. Система тем
-- **Светлая тема** - профессиональный вид для работы днем
-- **Темная тема** - комфорт для глаз в темное время
-- **Автоматическое переключение** - сохраняется в localStorage
-- **Оптимизированная контрастность** - все элементы четко видны
-- **Адаптивные цвета** - иконки, бейджи и таблицы меняют стили
+### 10. Theme System
+- **Light theme** - professional look for daytime work
+- **Dark theme** - eye comfort at night
+- **Automatic switching** - saved in localStorage
+- **Optimized contrast** - all elements clearly visible
+- **Adaptive colors** - icons, badges, and tables change styles
 
 ## 🔌 API Endpoints
 
-| Endpoint | Метод | Описание |
+| Endpoint | Method | Description |
 |----------|-------|----------|
-| `/api/pipelines` | GET | Список трубопроводов |
-| `/api/objects` | GET | Список объектов с фильтрацией |
-| `/api/objects/{id}` | GET | Детали объекта |
-| `/api/diagnostics` | GET | Список диагностик с фильтрацией |
-| `/api/dashboard` | GET | Статистика для дашборда |
-| `/api/map-data` | GET | Данные для карты |
-| `/api/ml/predict` | POST | ML-предсказание критичности |
-| `/api/report` | GET | Генерация HTML отчета |
-| `/api/report/pdf` | GET | Генерация PDF отчета (скачивание) |
-| `/api/import/validate-preview` | POST | Валидация и предпросмотр файла |
-| `/api/import/objects` | POST | Импорт объектов из CSV/XLSX |
-| `/api/import/diagnostics` | POST | Импорт диагностик из CSV/XLSX |
-| `/api/import/log` | GET | История импорта данных |
-| `/api/notifications` | GET | Список уведомлений |
-| `/api/notifications/unread-count` | GET | Количество непрочитанных |
-| `/api/notifications/{id}/read` | POST | Пометить как прочитанное |
-| `/api/notifications/read-all` | POST | Пометить все как прочитанные |
-| `/api/notifications/{id}` | DELETE | Удалить уведомление |
-| `/api/notifications/create` | POST | Создать уведомление (тест) |
-| `/api/predictions/object/{id}` | GET | Прогноз для конкретного объекта |
-| `/api/predictions/pipeline/{id}` | GET | Прогноз для всего трубопровода |
-| `/api/predictions/top-risks` | GET | Топ объектов по риску (limit параметр) |
-| `/api/predictions/dashboard` | GET | Дашборд предиктивной аналитики |
+| `/api/pipelines` | GET | List of pipelines |
+| `/api/objects` | GET | List of objects with filtering |
+| `/api/objects/{id}` | GET | Object details |
+| `/api/diagnostics` | GET | List of diagnostics with filtering |
+| `/api/dashboard` | GET | Dashboard statistics |
+| `/api/map-data` | GET | Map data |
+| `/api/ml/predict` | POST | ML criticality prediction |
+| `/api/report` | GET | HTML report generation |
+| `/api/report/pdf` | GET | PDF report generation (download) |
+| `/api/import/validate-preview` | POST | File validation and preview |
+| `/api/import/objects` | POST | Import objects from CSV/XLSX |
+| `/api/import/diagnostics` | POST | Import diagnostics from CSV/XLSX |
+| `/api/import/log` | GET | Data import history |
+| `/api/notifications` | GET | Notification list |
+| `/api/notifications/unread-count` | GET | Unread count |
+| `/api/notifications/{id}/read` | POST | Mark as read |
+| `/api/notifications/read-all` | POST | Mark all as read |
+| `/api/notifications/{id}` | DELETE | Delete notification |
+| `/api/notifications/create` | POST | Create notification (test) |
+| `/api/predictions/object/{id}` | GET | Forecast for specific object |
+| `/api/predictions/pipeline/{id}` | GET | Forecast for entire pipeline |
+| `/api/predictions/top-risks` | GET | Top objects by risk (limit parameter) |
+| `/api/predictions/dashboard` | GET | Predictive analytics dashboard |
 
-## 🤖 ML-модель (Улучшенная версия 2.0)
+## 🤖 ML Model (Enhanced Version 2.0)
 
-Система использует Random Forest Classifier с **15 признаками** для точной классификации критичности дефектов (точность >95%):
+The system uses Random Forest Classifier with **15 features** for accurate defect criticality classification (accuracy >95%):
 
-**Входные признаки:**
+**Input Features:**
 
-*Базовые параметры (5):*
-1. **param1** - глубина дефекта (%)
-2. **param2** - длина дефекта (мм)
-3. **param3** - ширина дефекта (мм)
-4. **quality_score** - оценка качества (1-4)
-5. **defect_found** - наличие дефекта
+*Basic Parameters (5):*
+1. **param1** - defect depth (%)
+2. **param2** - defect length (mm)
+3. **param3** - defect width (mm)
+4. **quality_score** - quality assessment (1-4)
+5. **defect_found** - defect presence
 
-*Расчетные параметры (10):*
-6. **defect_area** - площадь дефекта (длина × ширина)
-7. **defect_volume** - объем дефекта (глубина × длина × ширина)
-8. **is_critical_method** - критичный метод контроля (UZK, RGK, MFL, UTWM, TFI)
-9. **temp_normalized** - нормализованная температура (-50 до +50°C)
-10. **humidity_normalized** - нормализованная влажность (0-100%)
-11. **illumination_normalized** - нормализованная освещенность (0-1000 лк)
-12. **depth_to_area_ratio** - соотношение глубины к площади
-13. **shape_index** - индекс формы дефекта (длина/ширина)
-14. **is_deep_defect** - глубокий дефект (>30% потери металла)
-15. **is_large_defect** - большой дефект (>10,000 мм²)
+*Calculated Parameters (10):*
+6. **defect_area** - defect area (length × width)
+7. **defect_volume** - defect volume (depth × length × width)
+8. **is_critical_method** - critical control method (UZK, RGK, MFL, UTWM, TFI)
+9. **temp_normalized** - normalized temperature (-50 to +50°C)
+10. **humidity_normalized** - normalized humidity (0-100%)
+11. **illumination_normalized** - normalized illumination (0-1000 lux)
+12. **depth_to_area_ratio** - depth to area ratio
+13. **shape_index** - defect shape index (length/width)
+14. **is_deep_defect** - deep defect (>30% metal loss)
+15. **is_large_defect** - large defect (>10,000 mm²)
 
-**Классы:**
-- `normal` - низкий риск
-- `medium` - средний риск  
-- `high` - высокий риск
+**Classes:**
+- `normal` - low risk
+- `medium` - medium risk
+- `high` - high risk
 
-**Преимущества:**
-- ✅ Точность >95% 
-- ✅ Учитывает методы контроля и условия обследования
-- ✅ Анализирует геометрию дефектов
-- ✅ Fallback на rule-based классификацию
+**Advantages:**
+- ✅ Accuracy >95%
+- ✅ Considers control methods and inspection conditions
+- ✅ Analyzes defect geometry
+- ✅ Fallback to rule-based classification
 
-**Обучение:** Модель обучается на 10,000 исторических записях с разнообразными дефектами.
+**Training:** Model trained on 10,000 historical records with diverse defects.
 
-## 🛠️ Технологии
+## 🛠️ Technologies
 
 ### Backend
-- **FastAPI 0.104.1** - современный веб-фреймворк с автодокументацией
-- **Pandas 2.1.3** - обработка и анализ данных
-- **scikit-learn 1.3.2** - ML-модель классификации
-- **ReportLab 4.0.7** - генерация PDF отчетов
-- **openpyxl 3.1.2** - чтение и запись Excel файлов (.xlsx)
-- **Uvicorn 0.24.0** - высокопроизводительный ASGI сервер
+- **FastAPI 0.104.1** - modern web framework with auto-documentation
+- **Pandas 2.1.3** - data processing and analysis
+- **scikit-learn 1.3.2** - ML classification model
+- **ReportLab 4.0.7** - PDF report generation
+- **openpyxl 3.1.2** - reading and writing Excel files (.xlsx)
+- **Uvicorn 0.24.0** - high-performance ASGI server
 
 ### Frontend
-- **React 18.2** - современная UI библиотека
-- **TypeScript 5.9** - статическая типизация
-- **Vite 7.2** - быстрый сборщик нового поколения
-- **React Router 6.20** - клиентская маршрутизация
-- **Leaflet 1.9** - интерактивные карты с маркерами
-- **Recharts 2.10** - красивые графики и диаграммы
-- **Axios 1.6** - HTTP клиент для API запросов
-- **Lucide React 0.294** - современные SVG иконки
+- **React 18.2** - modern UI library
+- **TypeScript 5.9** - static typing
+- **Vite 7.2** - next-generation fast bundler
+- **React Router 6.20** - client-side routing
+- **Leaflet 1.9** - interactive maps with markers
+- **Recharts 2.10** - beautiful charts and diagrams
+- **Axios 1.6** - HTTP client for API requests
+- **Lucide React 0.294** - modern SVG icons
 
 ### DevOps
-- **Docker 20.10+** - контейнеризация приложений
-- **Docker Compose 3.8** - оркестрация multi-container приложений
-- **CSV Storage** - файловое хранилище без БД (локально-ориентированный подход)
+- **Docker 20.10+** - application containerization
+- **Docker Compose 3.8** - multi-container application orchestration
+- **CSV Storage** - file storage without database (locally-oriented approach)
 
-## 📝 Примеры использования
+## 📝 Usage Examples
 
-### Фильтрация данных
+### Data Filtering
 
 ```javascript
-// Получить все дефекты высокого риска
+// Get all high-risk defects
 GET /api/diagnostics?ml_label=high&defect_only=true
 
-// Получить объекты трубопровода MT-01
+// Get objects of pipeline MT-01
 GET /api/objects?pipeline_id=MT-01
 
-// Получить данные для карты с фильтром
+// Get map data with filter
 GET /api/map-data?pipeline_id=MT-02&ml_label=high
 ```
 
-### ML-предсказание
+### ML Prediction
 
 ```javascript
 POST /api/ml/predict
@@ -433,11 +433,11 @@ POST /api/ml/predict
   "param1": 45.5,
   "param2": 150.0,
   "param3": 80.0,
-  "quality_grade": "требует_мер",
+  "quality_grade": "requires_action",
   "defect_found": true
 }
 
-// Ответ
+// Response
 {
   "ml_label": "high",
   "confidence": 0.87,
@@ -450,96 +450,95 @@ POST /api/ml/predict
 }
 ```
 
-## 📄 Генерация данных
+## 📄 Data Generation
 
-Для генерации новых тестовых данных используйте:
+To generate new test data use:
 
 ```cmd
 python generate_mock_data.py
 ```
 
-Скрипт создаст:
-- 150 объектов контроля
-- 3 трубопровода (MT-01, MT-02, MT-03)
-- 2000+ записей диагностик
+The script will create:
+- 150 control objects
+- 3 pipelines (MT-01, MT-02, MT-03)
+- 2000+ diagnostic records
 
-## 🎨 Особенности дизайна
+## 🎨 Design Features
 
-### Оптимизированная контрастность
-- **Попапы карты** - белый фон с темным текстом в любой теме
-- **Риск-бейджи** - яркие цвета с четкими границами и тенями
-- **Таблицы** - улучшенный hover эффект без потери читаемости
-- **Иконки** - адаптивные цвета для светлой и темной темы
+### Optimized Contrast
+- **Map popups** - white background with dark text in any theme
+- **Risk badges** - bright colors with clear borders and shadows
+- **Tables** - improved hover effect without losing readability
+- **Icons** - adaptive colors for light and dark themes
 
-### Адаптивность
-- Работает на десктопе, планшете и мобильном
-- Responsive таблицы с горизонтальной прокруткой
-- Оптимизированные размеры для разных экранов
+### Responsiveness
+- Works on desktop, tablet, and mobile
+- Responsive tables with horizontal scrolling
+- Optimized sizes for different screens
 
-### Анимации и эффекты
-- Плавные переходы между темами
-- Hover эффекты на карточках и кнопках
-- Стеклянный эффект (glass morphism) на элементах
-- Тени и градиенты для глубины
+### Animations and Effects
+- Smooth transitions between themes
+- Hover effects on cards and buttons
+- Glass morphism effect on elements
+- Shadows and gradients for depth
 
-## ⚠️ Важные замечания
+## ⚠️ Important Notes
 
-1. **Все данные синтетические** - не отражают реальное состояние оборудования
-2. **MVP версия** - не предназначена для промышленной эксплуатации
-3. **Без БД** - данные загружаются из CSV в память при старте
-4. **PDF кириллица** - автоматически транслитерируется в латиницу для совместимости
-5. **Темы** - переключайте через кнопку ☀️/🌙 в правом верхнем углу
-6. **Отчеты** - доступны через выпадающее меню "Отчеты" в шапке
+1. **All data is synthetic** - does not reflect real equipment condition
+2. **MVP version** - not intended for industrial use
+3. **No database** - data loaded from CSV into memory on startup
+4. **PDF Cyrillic** - automatically transliterated to Latin for compatibility
+5. **Themes** - switch via ☀️/🌙 button in top right corner
+6. **Reports** - available through "Reports" dropdown menu in header
 
-## 🎓 Разработано для
+## 🎓 Developed For
 
-**Integrity Хакатон 2025**
+**Integrity Hackathon 2025**
 
-Демонстрация современного подхода к мониторингу технического состояния магистральных трубопроводов с применением веб-технологий и машинного обучения.
+Demonstration of a modern approach to monitoring the technical condition of main pipelines using web technologies and machine learning.
 
-## 📞 Поддержка
+## 📞 Support
 
-При возникновении вопросов или проблем:
-1. Проверьте, что backend запущен на порту 8000
-2. Проверьте, что frontend запущен на порту 5173
-3. Убедитесь, что все зависимости установлены
-4. Проверьте консоль браузера и терминал на наличие ошибок
+If you encounter questions or issues:
+1. Check that backend is running on port 8000
+2. Check that frontend is running on port 5173
+3. Make sure all dependencies are installed
+4. Check browser console and terminal for errors
 
-## 📜 Лицензия
+## 📜 License
 
-Проект создан для образовательных целей в рамках хакатона.
+Project created for educational purposes as part of the hackathon.
 
 ---
 
 ## 🆕 Changelog
 
-### Version 2.0 (Декабрь 2025)
-- ✨ **ML модель улучшена до 15 признаков** (точность >95%)
-- 🔮 **ПРЕДИКТИВНАЯ АНАЛИТИКА** - прогнозирование критических дефектов
-  - Линейная регрессия для анализа трендов
-  - Предсказание глубины дефекта на год вперед
-  - Расчет вероятности критического отказа
-  - Автоматические рекомендации по срокам и методам обследований
-  - Топ-20 объектов по риску с интерактивными деталями
-  - Прогноз по трубопроводам (дефектность, критичные объекты)
-- 📥 **Модуль импорта CSV/XLSX** с drag & drop и валидацией
-- 📊 **Предпросмотр данных** перед импортом (первые 10 строк)
-- ✅ **Комплексная валидация**: колонки, дубликаты, координаты, методы, даты
-- 📝 **Логи импорта** с подробными ошибками и предупреждениями
-- 📅 **Фильтры по датам** на карте и в списках (от/до)
-- 🔀 **Сортировка диагностик** по дате или глубине (возрастание/убывание)
-- 📊 **Отображение вероятностей ML** для каждого класса (%)
-- 🔔 **Система уведомлений в реальном времени**
-- 🐳 **Docker Compose для быстрого развертывания**
-- 📊 **10,000 тестовых записей** (увеличено с 2,000)
-- 🎯 **800 объектов контроля** (увеличено с 150)
-- 🔧 **13 методов контроля** (добавлены все из ТЗ)
-- 🌡️ **Учет условий обследования** (температура, влажность, освещенность)
-- 📐 **Анализ геометрии дефектов** (площадь, объем, форма)
-
+### Version 2.0 (December 2025)
+- ✨ **ML model enhanced to 15 features** (accuracy >95%)
+- 🔮 **PREDICTIVE ANALYTICS** - critical defect forecasting
+  - Linear regression for trend analysis
+  - Defect depth prediction one year ahead
+  - Critical failure probability calculation
+  - Automatic recommendations for inspection timing and methods
+  - Top-20 objects by risk with interactive details
+  - Pipeline forecast (defect rate, critical objects)
+- 📥 **CSV/XLSX import module** with drag & drop and validation
+- 📊 **Data preview** before import (first 10 rows)
+- ✅ **Comprehensive validation**: columns, duplicates, coordinates, methods, dates
+- 📝 **Import logs** with detailed errors and warnings
+- 📅 **Date filters** on map and lists (from/to)
+- 🔀 **Diagnostics sorting** by date or depth (ascending/descending)
+- 📊 **ML probability display** for each class (%)
+- 🔔 **Real-time notification system**
+- 🐳 **Docker Compose for quick deployment**
+- 📊 **10,000 test records** (increased from 2,000)
+- 🎯 **800 control objects** (increased from 150)
+- 🔧 **13 control methods** (all from requirements added)
+- 🌡️ **Inspection conditions tracking** (temperature, humidity, illumination)
+- 📐 **Defect geometry analysis** (area, volume, shape)
 
 ---
 
-**🚀 Удачи в использовании IntegrityOS!**
+**🚀 Good luck using IntegrityOS!**
 
-**Версия:** 2.0 | **Обновлено:** 7 Декабря 2025
+**Version:** 2.0 | **Updated:** December 7, 2025
